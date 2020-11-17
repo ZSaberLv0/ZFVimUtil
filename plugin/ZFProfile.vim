@@ -1,6 +1,8 @@
 
 " ============================================================
-" profile
+" ZFProfileStart
+command! -nargs=0 ZFProfileStart :call ZFProfileStart()
+
 if has('profile')
     let s:ZFProfilePath = get(g:, 'zf_vim_cache_path', $HOME . '/.vim_cache')
     augroup ZFProfile_augroup
@@ -58,5 +60,4 @@ function! ZFProfileStart(...)
     profile func *
     profile! file *
 endfunction
-command! -nargs=0 ZFProfileStart :call ZFProfileStart()
 

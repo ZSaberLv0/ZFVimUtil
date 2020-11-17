@@ -1,6 +1,8 @@
 
 " ============================================================
-" source counter
+" ZFSourceCounter
+command! -nargs=* ZFSourceCounter call ZF_SourceCounter(<f-args>)
+
 if !exists('g:ZFSourceCounterExtList')
     let g:ZFSourceCounterExtList=[
                 \   'md', 'vim', 'txt',
@@ -13,8 +15,6 @@ endif
 if !exists('g:ZFSourceCounterSortMode')
     let g:ZFSourceCounterSortMode='line'
 endif
-
-command! -nargs=* ZFSourceCounter call ZF_SourceCounter(<f-args>)
 
 function! ZF_SourceCounter(...)
     if a:0

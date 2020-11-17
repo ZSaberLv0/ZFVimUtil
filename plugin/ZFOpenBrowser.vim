@@ -1,6 +1,8 @@
 
 " ============================================================
-" open system browser
+" ZFOpenBrowser
+command! -nargs=1 ZFOpenBrowser :call ZF_OpenBrowser(<q-args>)
+
 function! ZF_OpenBrowser(url)
     if has("win32") || has("win64")
         " windows
@@ -16,5 +18,4 @@ function! ZF_OpenBrowser(url)
         endif
     endif
 endfunction
-command! -nargs=1 ZFOpenBrowser :call ZF_OpenBrowser(<q-args>)
 

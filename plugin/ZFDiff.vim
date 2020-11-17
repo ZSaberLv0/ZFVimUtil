@@ -1,5 +1,8 @@
 
-" diff two buffer
+" ============================================================
+" ZFDiffBuffer
+command! -nargs=+ ZFDiffBuffer :call ZF_DiffBuffer(<f-args>)
+
 function! s:ZF_DiffBufferSetup()
     execute 'nnoremap <buffer><silent> ' . get(g:, 'ZF_DiffBufferKeymap_quit', 'q') . ' :call ZF_DiffBufferExit()<cr>'
     let b:ZF_DiffBuffer_mappedKey = get(g:, 'ZF_DiffBufferKeymap_quit', 'q')
@@ -39,9 +42,11 @@ function! ZF_DiffBuffer(b0, b1)
     call s:ZF_DiffBufferSetup()
     execute "normal! \<c-w>="
 endfunction
-command! -nargs=+ ZFDiffBuffer :call ZF_DiffBuffer(<f-args>)
 
-" diff exit
+" ============================================================
+" ZFDiffExit
+command! -nargs=0 ZFDiffExit :call ZF_DiffExit()
+
 function! ZF_DiffExit()
     let tabIndex = tabpagenr()
     let winCount = tabpagewinnr(tabIndex, '$')
@@ -79,5 +84,4 @@ function! ZF_DiffExit()
         endfor
     endwhile
 endfunction
-command! -nargs=0 ZFDiffExit :call ZF_DiffExit()
 

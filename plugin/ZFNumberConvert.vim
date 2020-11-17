@@ -1,6 +1,9 @@
 
 " ============================================================
 " quick convert hexmial/decimal/binary numbers
+" [dhb][dhb].+
+command! -nargs=* ZFNumberConvert :call ZF_NumberConvert(<q-args>)
+
 function! ZF_NumberHexToDec(n)
     return str2nr(a:n, 16)
 endfunction
@@ -36,7 +39,7 @@ function! ZF_NumberBinToDec(n)
 endfunction
 
 function! ZF_NumberConvert(...)
-    if a:0 == 3 && len(a:1) == 1 && len(a:2) == 1
+    if match(get(a:, 1, ''), '^[dhb][dhb].\+') == 0
         let cmd = a:1 . a:2 . a:3
     else
         echo 'number convert'
@@ -83,5 +86,4 @@ function! ZF_NumberConvert(...)
     echo result
     return result
 endfunction
-command! -nargs=* ZFNumberConvert :call ZF_NumberConvert(<f-args>)
 

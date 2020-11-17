@@ -11,6 +11,7 @@ endif
 " ============================================================
 " ZFImgScale
 command! -nargs=+ -complete=file ZFImgScale :call ZFImgScale(<f-args>)
+
 function! ZFImgScale(toFile, fromFile, maxWidth, ...)
 execute s:python_EOF
 
