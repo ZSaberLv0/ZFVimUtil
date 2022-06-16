@@ -16,6 +16,7 @@ if !exists('s:serverList')
 endif
 
 function! ZFHttpServerStart(...)
+    call ZFHttpServerStop(get(a:, 1, 8080))
     if empty(ZFPython())
         echo '[ZFHttpServer] no python available'
         return
