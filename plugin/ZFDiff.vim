@@ -28,7 +28,7 @@ function! ZF_DiffBuffer(b0, b1)
     if has('gui')
         set lines=9999 columns=9999
     endif
-    if(has('win32') || has('win64') || has('win95') || has('win16'))
+    if has('windows')
         simalt ~x
     endif
     vsplit
