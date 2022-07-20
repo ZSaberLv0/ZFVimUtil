@@ -32,7 +32,12 @@ function! ZFHttpServerStart(...)
     endif
     echo '[ZFHttpServer] started at port ' . serverInfo['port'] . ', path: ' . serverInfo['path']
     if exists('*ZFAsyncRun')
-        call ZFAsyncRun(cmd, s:serverId(serverInfo))
+        call ZFAsyncRun({
+                    \   'jobCmd' : cmd,
+                    \   'outputTo' : get(g:, 'ZFHttpServer_outputTo', {
+                    \     'outputType' : 'statusline',
+                    \   }),
+                    \ }, s:serverId(serverInfo))
         let s:serverList[s:serverId(serverInfo)] = serverInfo
     else
         call system(cmd)
