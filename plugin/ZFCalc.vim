@@ -24,7 +24,10 @@ function! ZFCalc(pattern)
         echo v:exception
         return
     endtry
-    let result = substitute(result, '\.0*$', '', '')
+    " (?<=\.[0-9]*[^0]*)0+$
+    let result = substitute(result, '\%(\.[0-9]*[^0]*\)\@<=0\+$', '', '')
+    " \.+$
+    let result = substitute(result, '\.\+$', '', '')
     call ZF_setClipboard(result)
     redraw!
     echo result
