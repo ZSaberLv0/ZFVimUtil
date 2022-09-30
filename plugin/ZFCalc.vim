@@ -15,14 +15,16 @@ function! ZFCalc(pattern)
     let cmd .= ' '
     let cmd .= 'import math;'
     let cmd .= 'from math import *;'
-    let cmd .= 'print(' . a:pattern . ')'
+    let cmd .= 'import numpy;'
+    let cmd .= 'numpy.set_printoptions(suppress = True);'
+    let cmd .= 'print(numpy.format_float_positional(numpy.float32(' . a:pattern . ')))'
     try
         silent! let result = ZF_ExecCmd(cmd)
     catch
         echo v:exception
         return
     endtry
-    let result = substitute(result, '\.0\+$', '', '')
+    let result = substitute(result, '\.0*$', '', '')
     call ZF_setClipboard(result)
     redraw!
     echo result
