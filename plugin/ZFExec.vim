@@ -85,34 +85,68 @@ command! -nargs=+ -complete=command ZFExecCmd :call ZF_ExecCmd(<q-args>)
 " ============================================================
 " open all files in clipboard
 function! ZF_OpenAllFileInClipboard()
-    enew
-    normal! pgg
-
-    let files = []
-    for i in range(1, line("$"))
-        let line = getline(".")
-        let line = substitute(line, '^[\t ]*', '', 'g')
-        let line = substitute(line, '[\t ]*$', '', 'g')
-        if line != ''
-            call add(files, line)
+    for file in split(@", "\n")
+        let file = substitute(file, '^[\t ]*', '', 'g')
+        let file = substitute(file, '[\t ]*$', '', 'g')
+        if empty(file)
+            continue
         endif
-        normal! j
-    endfor
-    bd!
-
-    for file in files
         execute ':edit ' . file
     endfor
 endfunction
 command! -nargs=0 ZFOpenAllFileInClipboard :call ZF_OpenAllFileInClipboard()
 
+" run all files in clipboard by system editor
+function! ZF_RunAllFileInClipboard()
+    for file in split(@", "\n")
+        let file = substitute(file, '^[\t ]*', '', 'g')
+        let file = substitute(file, '[\t ]*$', '', 'g')
+        if empty(file)
+            continue
+        endif
+        call ZFRunFile(file)
+    endfor
+endfunction
+command! -nargs=0 ZFRunAllFileInClipboard :call ZF_RunAllFileInClipboard()
+
+function! ZFRunFile(path)
+    if !exists('s:haskdeinit')
+        let s:haskdeinit = system("ps -e") =~ 'kdeinit'
+    endif
+    if !exists('s:hasdarwin')
+        let s:hasdarwin = system("uname -s") =~ 'Darwin'
+    endif
+
+    let l:oldssl=&shellslash
+    set noshellslash
+
+    if has("gui_running")
+        let args = shellescape(a:path,1)." &"
+    else
+        let args = shellescape(a:path,1)." > /dev/null"
+    end
+
+    if has("unix") && executable("gnome-open") && !s:haskdeinit
+        exe "silent !gnome-open ".args
+        let ret= v:shell_error
+    elseif has("unix") && executable("kde-open") && s:haskdeinit
+        exe "silent !kde-open ".args
+        let ret= v:shell_error
+    elseif has("unix") && executable("open") && s:hasdarwin
+        exe "silent !open ".args
+        let ret= v:shell_error
+    elseif has("win32") || has("win64")
+        exe "silent !start explorer ".shellescape(a:path,1)
+    end
+    let &shellslash=l:oldssl
+
+    return ret == 0
+endfunction
+
 " run shell script in clipboard
 function! ZF_RunShellScriptInClipboard()
-    enew
-    normal! p
     let tmp_file = tempname()
-    execute ':w! ' . tmp_file
-    bd!
+    call writefile(split(@", "\n"), tmp_file)
     let result = system('sh ' . tmp_file)
     call delete(tmp_file)
     let result = ZF_convertTermText(result)
