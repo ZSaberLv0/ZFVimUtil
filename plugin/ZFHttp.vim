@@ -25,10 +25,17 @@ function! ZFHttpServerStart(...)
                 \   'path' : fnamemodify(getcwd(), ':~'),
                 \   'port' : get(a:, 1, 8080),
                 \ }
-    if ZFPythonVersion() >= 3
-        let cmd = ZFPython() . ' -m http.server ' . serverInfo['port']
+    if executable('http-server')
+        " npm i http-server
+        let cmd = 'http-server .'
+                    \ . ' -p ' . serverInfo['port']
+                    \ . ' --cors'
     else
-        let cmd = ZFPython() . ' -m SimpleHTTPServer ' . serverInfo['port']
+        if ZFPythonVersion() >= 3
+            let cmd = ZFPython() . ' -m http.server ' . serverInfo['port']
+        else
+            let cmd = ZFPython() . ' -m SimpleHTTPServer ' . serverInfo['port']
+        endif
     endif
     echo '[ZFHttpServer] started at port ' . serverInfo['port'] . ', path: ' . serverInfo['path']
     if exists('*ZFAsyncRun')
