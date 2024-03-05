@@ -6,11 +6,12 @@ function! ZFReadToTmp(url)
     if !ZFDownload(to, a:url)
         return 0
     endif
-    try
+    if v:version < 800
+        " some old vim would cause strange issue, reason unknown
+        noautocmd execute 'noautocmd edit ' . substitute(to, ' ', '\\ ', 'g')
+    else
         execute 'edit ' . substitute(to, ' ', '\\ ', 'g')
-    catch
-        return 0
-    endtry
+    endif
     return 1
 endfunction
 
