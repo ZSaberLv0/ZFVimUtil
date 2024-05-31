@@ -49,7 +49,7 @@ function! ZFHttpServerStart(...)
     endif
 
     let pathSaved = fnamemodify(getcwd(), ':p')
-    echo '[ZFHttpServer] started at port ' . serverInfo['port'] . ', path: ' . fnamemodify(serverInfo['path'], ':.')
+    echo '[ZFHttpServer] started at port ' . serverInfo['port'] . ', path: ' . path
     execute 'cd ' . substitute(path, ' ', '\\ ', 'g')
     if exists('*ZFAsyncRun')
         call ZFAsyncRun({
@@ -94,9 +94,9 @@ function! ZFHttpServerStop(...)
     endif
     if exists('s:serverList[serverId]')
         unlet s:serverList[serverId]
-        echo '[ZFHttpServer] stopped at port ' . port . ', path: ' . fnamemodify(path, ':.')
+        echo '[ZFHttpServer] stopped at port ' . port . ', path: ' . path
     else
-        echo '[ZFHttpServer] no server at port ' . port . ', path: ' . fnamemodify(path, ':.')
+        echo '[ZFHttpServer] no server at port ' . port . ', path: ' . path
     endif
 endfunction
 
