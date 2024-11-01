@@ -78,7 +78,9 @@ function! ZF_DiffExit()
                     endif
                     return
                 endif
-                quit
+                if tabpagewinnr(tabIndex, '$') > 1
+                    quit
+                endif
                 break
             endif
         endfor
