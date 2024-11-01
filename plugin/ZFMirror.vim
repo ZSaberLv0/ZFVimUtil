@@ -51,7 +51,7 @@ function! ZFMirror()
         return
     endif
 
-    redraw | echo 'updating mirrors...'
+    redraw
     if exists('*ZF_system')
         let Fn = function('ZF_system')
     else
@@ -67,10 +67,16 @@ function! ZFMirror()
         let T_shell = get(config, 'shell', '')
         if !empty(T_shell)
             if type(T_shell) == type('')
-                call Fn(T_shell)
+                let result = Fn(T_shell)
+                if v:shell_error != '0'
+                    echo result
+                endif
             elseif type(T_shell) == type([])
                 for t in T_shell
-                    call Fn(t)
+                    let result = Fn(t)
+                    if v:shell_error != '0'
+                        echo result
+                    endif
                 endfor
             elseif type(T_shell) == type(function('type'))
                 call T_shell()
@@ -90,6 +96,5 @@ function! ZFMirror()
             endif
         endif
     endfor
-    redraw | echo 'mirrors update finished'
 endfunction
 
