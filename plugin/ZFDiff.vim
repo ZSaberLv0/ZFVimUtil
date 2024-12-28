@@ -84,10 +84,18 @@ function! s:bufnrChoose()
 
     let hintList = []
     for item in itemList
-        call add(hintList, printf("%s\t=> %s"
-                    \ , fnamemodify(item['bufname'], ':t')
-                    \ , item['bufname']
-                    \ ))
+        if empty(item['bufname'])
+            call add(hintList, printf("%s\t=> [%s]"
+                        \ , '[No Name]'
+                        \ , item['bufnr']
+                        \ ))
+        else
+            call add(hintList, printf("%s\t=> %s [%s]"
+                        \ , fnamemodify(item['bufname'], ':t')
+                        \ , item['bufname']
+                        \ , item['bufnr']
+                        \ ))
+        endif
     endfor
     let choice = ZFChoice('choose buf to diff:', hintList)
     if choice != -1
