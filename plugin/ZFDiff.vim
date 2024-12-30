@@ -29,14 +29,14 @@ function! ZF_DiffBuffer(...)
     let b1 = get(a:, 2, 0)
 
     if b0 <= 0
-        let b0 = s:bufnrChoose()
+        let b0 = s:bufnrChoose('choose [LEFT] buf to diff:', 0)
         if b0 <= 0
             return 0
         endif
     endif
 
     if b1 <= 0
-        let b1 = s:bufnrChoose()
+        let b1 = s:bufnrChoose('choose [RIGHT] buf to diff:', b0)
         if b1 <= 0
             return 0
         endif
@@ -64,14 +64,14 @@ endfunction
 function! ZF_DiffBuffer_sortFunc(e0, e1)
     return a:e0['bufname'] < a:e1['bufname']
 endfunction
-function! s:bufnrChoose()
+function! s:bufnrChoose(title, exclude)
     let bufnrCur = bufnr('')
     let nameCur = fnamemodify(bufname(bufnrCur), ':t')
 
     let itemList = []
     let otherList = []
     for bufnr in range(1, bufnr('$'))
-        if buflisted(bufnr)
+        if buflisted(bufnr) && bufnr != bufnrCur && bufnr != a:exclude
             call add(fnamemodify(bufname(bufnr), ':t') == nameCur ? itemList : otherList, {
                         \   'bufnr' : bufnr,
                         \   'bufname' : bufname(bufnr),
@@ -81,6 +81,12 @@ function! s:bufnrChoose()
     call sort(itemList, function('ZF_DiffBuffer_sortFunc'))
     call sort(otherList, function('ZF_DiffBuffer_sortFunc'))
     call extend(itemList, otherList)
+    if bufnrCur != a:exclude
+        call insert(itemList, {
+                    \   'bufnr' : bufnrCur,
+                    \   'bufname' : bufname(bufnrCur),
+                    \ }, 0)
+    endif
 
     let hintList = []
     for item in itemList
@@ -97,7 +103,7 @@ function! s:bufnrChoose()
                         \ ))
         endif
     endfor
-    let choice = ZFChoice('choose buf to diff:', hintList)
+    let choice = ZFChoice(a:title, hintList)
     if choice != -1
         return itemList[choice]['bufnr']
     else
