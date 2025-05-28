@@ -91,15 +91,30 @@ function! s:bufnrChoose(title, exclude)
     let hintList = []
     for item in itemList
         if empty(item['bufname'])
-            call add(hintList, printf("%s\t=> [%s]"
-                        \ , '[No Name]'
+            call add(hintList, printf("[%s]"
                         \ , item['bufnr']
                         \ ))
         else
-            call add(hintList, printf("%s\t=> %s [%s]"
-                        \ , fnamemodify(item['bufname'], ':t')
-                        \ , item['bufname']
+            let limit = &columns - 12 - len(printf("[%s]\t%s\t=> %s"
                         \ , item['bufnr']
+                        \ , fnamemodify(item['bufname'], ':t')
+                        \ , ''
+                        \ ))
+            let info = substitute(fnamemodify(item['bufname'], ':h'), '\\', '/', 'g')
+            while 1
+                if len(info) < limit
+                    break
+                endif
+                let p = stridx(info, '/')
+                if p == -1
+                    break
+                endif
+                let info = '...' . strpart(info, p + 1)
+            endwhile
+            call add(hintList, printf("[%s]\t%s\t=> %s"
+                        \ , item['bufnr']
+                        \ , fnamemodify(item['bufname'], ':t')
+                        \ , info
                         \ ))
         endif
     endfor
