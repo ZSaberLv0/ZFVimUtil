@@ -117,8 +117,10 @@ function! ZFRunFile(path)
         let s:hasdarwin = system("uname -s") =~ 'Darwin'
     endif
 
-    let l:oldssl=&shellslash
-    set noshellslash
+    if exists('+shellslash')
+        let l:oldssl=&shellslash
+        set noshellslash
+    endif
 
     if has("gui_running")
         let args = shellescape(a:path,1)." &"
@@ -138,7 +140,9 @@ function! ZFRunFile(path)
     elseif has("win32") || has("win64")
         exe "silent !start explorer ".shellescape(a:path,1)
     end
-    let &shellslash=l:oldssl
+    if exists('+shellslash')
+        let &shellslash=l:oldssl
+    endif
 
     return ret == 0
 endfunction
