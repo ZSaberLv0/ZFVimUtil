@@ -95,12 +95,12 @@ function! s:bufnrChoose(title, exclude)
                         \ , item['bufnr']
                         \ ))
         else
-            let limit = &columns - 12 - len(printf("[%s]\t%s\t=> %s"
+            let limit = &columns - 16 - len(printf("[%s]\t%s\t=> %s"
                         \ , item['bufnr']
                         \ , fnamemodify(item['bufname'], ':t')
                         \ , ''
                         \ ))
-            let info = substitute(fnamemodify(item['bufname'], ':h'), '\\', '/', 'g')
+            let info = substitute(fnamemodify(fnamemodify(item['bufname'], ':h'), ':.'), '\\', '/', 'g')
             while 1
                 if len(info) < limit
                     break
